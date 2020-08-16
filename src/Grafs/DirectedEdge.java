@@ -4,6 +4,7 @@ public class DirectedEdge<T> extends Edge<T> {
 
 	DirectedEdge(T first, T last) {
 		super(first, last);
+		this.flag = false;
 		// TODO Auto-generated constructor stub
 	}
 	@Override

@@ -1,7 +1,5 @@
 package Grafs;
 
-import java.util.*;
-
 public class Start {
 	public static void main(String args[]) {
 		Graf<Integer> gr = new Graf<Integer>();
@@ -22,7 +20,9 @@ public class Start {
 		gr.Show();
 		gr.StartDFS(1);
 		gr.Search(12, 1);
-		boolean f = gr.Colored(1);
-		System.out.println(f);
+		gr.AddVertex(13);
+		gr.AddDirectedEdge(12, 13);
+		gr.Search(1, 13);
+		gr.Search(13, 1);
 	}
 }

@@ -44,6 +44,10 @@ public class Graf <T> {
 		Edge<T> e = new Edge<T>(first, last);
 		this.AddEdge(e);
 	}
+	public void AddDirectedEdge(T first, T last) {
+		DirectedEdge<T> e = new DirectedEdge<T>(first, last);
+		this.AddEdge(e);
+	}
 	public void DFS(T start) {
 		tree.add(start);
 		list.add(start);
@@ -84,7 +88,7 @@ public class Graf <T> {
 					DaWay(element.last, finish);
 				}
 			}
-			if ((element.last == start)) {
+			if ((element.last == start)&& element.flag) {
 				f = tree.add(element.first);
 				if (f) {
 					DaWay(element.first, finish);
@@ -100,7 +104,7 @@ public class Graf <T> {
 			queue.poll();
 		}
 		DaWay(start, finish);
-		while(queue.getLast() != finish) {
+		while(!queue.isEmpty() && (queue.getLast() != finish)) {
 			queue.pollLast();
 		}
 		while(!queue.isEmpty()) {
