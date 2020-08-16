@@ -2,14 +2,12 @@ package Grafs;
 import java.util.*;
 
 public class Graf <T> {
-	public int size;
-	public HashSet<T> Vertex;
-	public HashSet<Edge<T>> Edges;
-	public HashSet<T> tree;
-	public ArrayList<T> list;
-	public Deque<T> queue;
+	protected HashSet<T> Vertex;
+	protected HashSet<Edge<T>> Edges;
+	protected HashSet<T> tree;
+	protected ArrayList<T> list;
+	protected Deque<T> queue;
 	Graf() {
-		size = 0;
 		Vertex = new HashSet<T>();
 		Edges = new HashSet<Edge<T>>();
 		tree = new HashSet<T>();
@@ -28,7 +26,6 @@ public class Graf <T> {
 	}
 	public void AddVertex(T ver) {
 		Vertex.add(ver);
-		size++;
 	}
 	public void AddEdge(Edge<T> e) {
 		boolean f = false, l = false;

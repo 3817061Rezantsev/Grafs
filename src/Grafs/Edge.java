@@ -1,8 +1,8 @@
 package Grafs;
 
 public class Edge<T> {
-	public T first;
-	public T last;
+	protected T first;
+	protected T last;
 	Edge(T first, T last) {
 		this.first = first;
 		this.last = last;
