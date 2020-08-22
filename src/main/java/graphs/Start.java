@@ -1,5 +1,7 @@
 package graphs;
 
+import java.util.*;
+
 public class Start {
 	public static void main(String args[]) {
 		Graph<Integer> gr = new Graph<Integer>();
@@ -20,9 +22,15 @@ public class Start {
 		gr.show();
 		gr.startDFS(1);
 		gr.search(12, 1);
+		gr.ShowList();
 		gr.addVertex(13);
 		gr.addDirectedEdge(12, 13);
-		gr.search(1, 13);
+		ArrayList<Integer> q = gr.search(1, 13);
+		for (Integer element : q)
+			System.out.print(element.toString() + ", ");
+		System.out.println();
+		gr.ShowList();
 		gr.search(13, 1);
+		gr.ShowList();
 	}
 }

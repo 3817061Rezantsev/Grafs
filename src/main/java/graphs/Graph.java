@@ -56,7 +56,7 @@ public class Graph<T> {
 		this.addEdge(e);
 	}
 
-	public void dfs(T start) {
+	private void dfs(T start) {
 		tree.add(start);
 		list.add(start);
 		for (Edge<T> element : edges) {
@@ -74,17 +74,24 @@ public class Graph<T> {
 			}
 		}
 	}
-
-	public void startDFS(T start) {
-		tree.clear();
-		list.clear();
-		dfs(start);
+	
+	public void ShowList() {
+		if (list.isEmpty()) {
+			System.out.println("the way does not exist");
+		}
 		for (T element : list)
 			System.out.print(element.toString() + ", ");
 		System.out.println();
 	}
 
-	public void daWay(T start, T finish) {
+	public ArrayList<T> startDFS(T start) {
+		tree.clear();
+		list.clear();
+		dfs(start);
+		return list;
+	}
+
+	private void daWay(T start, T finish) {
 		tree.add(start);
 		queue.add(start);
 		if ((start != finish) && (!tree.contains(finish))) {
@@ -109,8 +116,9 @@ public class Graph<T> {
 
 	}
 
-	public void search(T start, T finish) {
+	public ArrayList<T> search(T start, T finish) {
 		tree.clear();
+		list.clear();
 		while (!queue.isEmpty()) {
 			queue.poll();
 		}
@@ -119,12 +127,11 @@ public class Graph<T> {
 			queue.pollLast();
 		}
 		while (!queue.isEmpty()) {
-			System.out.print(queue.poll() + ", ");
+			list.add(queue.poll());
 		}
-		System.out.println();
+		return list;
 	}
-
-	public boolean colored(T ver) {
+	private boolean colored(T ver) {
 		boolean f = true;
 		for (Edge<T> element : edges) {
 			if (element.first == ver) {
