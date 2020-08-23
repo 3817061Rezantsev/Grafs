@@ -23,7 +23,7 @@ public class GraphTest {
 		graph.addEdge(1, 2);
 		graph.addEdge(2, 3);
 
-		final int numOfReadThreads = 2;
+		final int numOfReadThreads = 10;
 		CountDownLatch latch = new CountDownLatch(numOfReadThreads);
 		List<SearchGraphThread> threads = new ArrayList<>();
 		for (int i = 0; i < numOfReadThreads; i++) {

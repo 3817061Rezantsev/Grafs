@@ -5,16 +5,10 @@ import java.util.*;
 public class Graph<T> {
 	protected HashSet<T> vertexes;
 	protected HashSet<Edge<T>> edges;
-	protected HashSet<T> tree;
-	protected ArrayList<T> list;
-	protected Deque<T> queue;
 
 	public Graph() {
 		vertexes = new HashSet<T>();
 		edges = new HashSet<Edge<T>>();
-		tree = new HashSet<T>();
-		list = new ArrayList<T>();
-		queue = new LinkedList<T>();
 	}
 
 	public void show() {
@@ -55,60 +49,51 @@ public class Graph<T> {
 		DirectedEdge<T> e = new DirectedEdge<T>(first, last);
 		this.addEdge(e);
 	}
-
-	private void dfs(T start) {
+/*
+	private void dfs(T start, ArrayList<T> list) {
 		tree.add(start);
 		list.add(start);
 		for (Edge<T> element : edges) {
 			if (element.first == start) {
 				boolean f = tree.add(element.last);
 				if (f) {
-					dfs(element.last);
+					dfs(element.last, list);
 				}
 			}
 			if (element.last == start) {
 				boolean f = tree.add(element.first);
 				if (f) {
-					dfs(element.first);
+					dfs(element.first, list);
 				}
 			}
 		}
 	}
-	
-	public void ShowList() {
-		if (list.isEmpty()) {
-			System.out.println("the way does not exist");
-		}
-		for (T element : list)
-			System.out.print(element.toString() + ", ");
-		System.out.println();
-	}
 
 	public ArrayList<T> startDFS(T start) {
 		tree.clear();
-		list.clear();
-		dfs(start);
+		ArrayList<T> list = new ArrayList<T>();
+		dfs(start, list);
 		return list;
 	}
-
-	private void daWay(T start, T finish) {
+*/
+	private void daWay(T start, T finish, Deque<T> queue, HashSet<T> tree) {
 		tree.add(start);
 		queue.add(start);
 		if ((start != finish) && (!tree.contains(finish))) {
-			while (colored(queue.getLast()))
+			while (colored(queue.getLast(), tree))
 				queue.pollLast();
 			boolean f = false;
 			for (Edge<T> element : edges) {
 				if ((element.first == start)) {
 					f = tree.add(element.last);
 					if (f) {
-						daWay(element.last, finish);
+						daWay(element.last, finish, queue, tree);
 					}
 				}
 				if ((element.last == start) && element.flag) {
 					f = tree.add(element.first);
 					if (f) {
-						daWay(element.first, finish);
+						daWay(element.first, finish, queue, tree);
 					}
 				}
 			}
@@ -117,12 +102,13 @@ public class Graph<T> {
 	}
 
 	public ArrayList<T> search(T start, T finish) {
-		tree.clear();
-		list.clear();
+		HashSet<T> tree = new HashSet<T>();
+		ArrayList<T> list = new ArrayList<T>();
+		Deque<T> queue = new LinkedList<T>();
 		while (!queue.isEmpty()) {
 			queue.poll();
 		}
-		daWay(start, finish);
+		daWay(start, finish, queue, tree);
 		while (!queue.isEmpty() && (queue.getLast() != finish)) {
 			queue.pollLast();
 		}
@@ -131,7 +117,7 @@ public class Graph<T> {
 		}
 		return list;
 	}
-	private boolean colored(T ver) {
+	private boolean colored(T ver, HashSet<T> tree) {
 		boolean f = true;
 		for (Edge<T> element : edges) {
 			if (element.first == ver) {
