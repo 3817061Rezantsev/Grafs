@@ -105,6 +105,9 @@ public class Graph<T> {
 		HashSet<T> tree = new HashSet<T>();
 		ArrayList<T> list = new ArrayList<T>();
 		Deque<T> queue = new LinkedList<T>();
+		if (edges.isEmpty()) {
+			return list;
+		}
 		while (!queue.isEmpty()) {
 			queue.poll();
 		}
