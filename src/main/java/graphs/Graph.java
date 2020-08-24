@@ -109,15 +109,7 @@ public class Graph<T> {
 		if (edges.isEmpty()) {
 			return list;
 		}
-		while (!queue.isEmpty()) {
-			queue.poll();
-		}
-		synchronized (edges) {
-			synchronized (vertexes) {
-				daWay(start, finish, queue, tree);
-			}
-		}
-		
+		daWay(start, finish, queue, tree);
 		while (!queue.isEmpty() && (queue.getLast() != finish)) {
 			queue.pollLast();
 		}
