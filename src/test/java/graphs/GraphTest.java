@@ -46,7 +46,7 @@ public class GraphTest {
 		Graph<Integer> graph = new Graph<Integer>();
 		Integer v1 = 1;
 		Integer v2 = 100;
-		final int numOfReadThreads = 5;
+		final int numOfReadThreads = 25;
 
 		CountDownLatch latch = new CountDownLatch(numOfReadThreads + 1);
 		List<GraphThread> threads = new ArrayList<>();
@@ -110,6 +110,7 @@ public class GraphTest {
 				List<Integer> path = null;
 				while (path == null || path.isEmpty()) {
 					path = graph.search(v1, v2);
+					Thread.sleep(1);
 				}
 				List<Integer> expectedPath = IntStream.rangeClosed(v1, v2).boxed().collect(Collectors.toList());
 				Assert.assertArrayEquals("Search result check", expectedPath.toArray(), path.toArray());
