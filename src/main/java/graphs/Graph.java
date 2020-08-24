@@ -80,7 +80,7 @@ public class Graph<T> {
 		tree.add(start);
 		queue.add(start);
 		if ((start != finish) && (!tree.contains(finish))) {
-			while (colored(queue.getLast(), tree))
+			while (!queue.isEmpty() && colored(queue.getLast(), tree))
 				queue.pollLast();
 			boolean f = false;
 			for (Edge<T> element : edges) {
