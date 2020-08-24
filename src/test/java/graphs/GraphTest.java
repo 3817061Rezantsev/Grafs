@@ -33,19 +33,26 @@ public class GraphTest {
 
 	@Test
 	public void searchExistingPath() {
+		Integer v1 = 1;
+		Integer v2 = 200;
+
 		Graph<Integer> graph = new Graph<Integer>();
-		graph.addVertex(1);
-		graph.addVertex(2);
-		graph.addEdge(1, 2);
-		List<Integer> path = graph.search(1, 2);
-		Assert.assertArrayEquals("Search result check", new Integer[] { 1, 2 }, path.toArray());
+		for (int i = v1; i <= v2; i++) {
+			graph.addVertex(i);
+		}
+		for (int i = v1; i < v2; i++) {
+			graph.addEdge(i, i + 1);
+			List<Integer> path = graph.search(v1, i + 1);
+			List<Integer> expectedPath = IntStream.rangeClosed(v1, i + 1).boxed().collect(Collectors.toList());
+			Assert.assertArrayEquals("Search result check", expectedPath.toArray(), path.toArray());
+		}
 	}
 
-	@Test
+	//@Test
 	public void concurrencyTest() throws InterruptedException {
 		Graph<Integer> graph = new Graph<Integer>();
 		Integer v1 = 1;
-		Integer v2 = 100;
+		Integer v2 = 1000;
 		final int numOfReadThreads = 25;
 
 		CountDownLatch latch = new CountDownLatch(numOfReadThreads + 1);
@@ -60,7 +67,7 @@ public class GraphTest {
 			executor.execute(runnable);
 		}
 
-		latch.await(10, TimeUnit.SECONDS);
+		latch.await(60, TimeUnit.SECONDS);
 		// latch.await();
 
 		for (GraphThread graphThread : threads) {
@@ -106,7 +113,6 @@ public class GraphTest {
 		@Override
 		public void run() {
 			try {
-
 				List<Integer> path = null;
 				while (path == null || path.isEmpty()) {
 					path = graph.search(v1, v2);
