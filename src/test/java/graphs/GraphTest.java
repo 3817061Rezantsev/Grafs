@@ -41,12 +41,12 @@ public class GraphTest {
 		Assert.assertArrayEquals("Search result check", new Integer[] { 1, 2 }, path.toArray());
 	}
 
-	//@Test
+	@Test
 	public void concurrencyTest() throws InterruptedException {
 		Graph<Integer> graph = new Graph<Integer>();
 		Integer v1 = 1;
-		Integer v2 = 3;
-		final int numOfReadThreads = 2;
+		Integer v2 = 100;
+		final int numOfReadThreads = 5;
 
 		CountDownLatch latch = new CountDownLatch(numOfReadThreads + 1);
 		List<GraphThread> threads = new ArrayList<>();
