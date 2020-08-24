@@ -15,54 +15,77 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class GraphTest {
-	
+
 	@Test
 	public void searchNotExistingPath() {
 		Graph<Integer> graph = new Graph<Integer>();
 		List<Integer> path = graph.search(1, 2);
 		assertTrue("Should be null or empty", path == null || path.isEmpty());
+		graph.addVertex(1);
+		graph.addVertex(2);
+		path = graph.search(1, 2);
+		assertTrue("Should be null or empty", path == null || path.isEmpty());
+		graph.addVertex(3);
+		graph.addEdge(1, 2);
+		path = graph.search(1, 3);
+		assertTrue("Should be null or empty", path == null || path.isEmpty());
+	}
+
+	@Test
+	public void searchExistingPath() {
+		Graph<Integer> graph = new Graph<Integer>();
+		graph.addVertex(1);
+		graph.addVertex(2);
+		graph.addEdge(1, 2);
+		List<Integer> path = graph.search(1, 2);
+		Assert.assertArrayEquals("Search result check", new Integer[] { 1, 2 }, path.toArray());
 	}
 
 	//@Test
 	public void concurrencyTest() throws InterruptedException {
 		Graph<Integer> graph = new Graph<Integer>();
 		Integer v1 = 1;
-		Integer v2 = 100;
-		graph.addVertex(1);
-		graph.addVertex(2);
-		graph.addVertex(3);
-		graph.addEdge(1, 2);
-		graph.addEdge(2, 3);
+		Integer v2 = 3;
+		final int numOfReadThreads = 2;
 
-		final int numOfReadThreads = 10;
-		CountDownLatch latch = new CountDownLatch(numOfReadThreads);
+		CountDownLatch latch = new CountDownLatch(numOfReadThreads + 1);
 		List<GraphThread> threads = new ArrayList<>();
 		for (int i = 0; i < numOfReadThreads; i++) {
-			threads.add(new SearchGraphThread(graph, v1, v2, latch));
+			threads.add(new SearchGraphThread("search-thread-" + i, graph, v1, v2, latch));
 		}
+		threads.add(new WriteGraphThread("write-thread", graph, v1, v2, latch));
+
 		Executor executor = Executors.newFixedThreadPool(threads.size());
 		for (Runnable runnable : threads) {
 			executor.execute(runnable);
 		}
+
 		latch.await(10, TimeUnit.SECONDS);
+		// latch.await();
 
 		for (GraphThread graphThread : threads) {
-			assertTrue("Thread should exit succesfully", graphThread.isSuccess());
+			assertTrue("Thread " + graphThread.getName() + " should exit succesfully", graphThread.isSuccess());
 		}
 	}
 
 	private static abstract class GraphThread implements Runnable {
+		protected String name;
 		protected Graph<Integer> graph;
 		protected Integer v1;
 		protected Integer v2;
 		protected CountDownLatch latch;
 		private boolean success;
 
-		public GraphThread(Graph<Integer> graph, Integer v1, Integer v2, CountDownLatch latch) {
+		public GraphThread(String name, Graph<Integer> graph, Integer v1, Integer v2, CountDownLatch latch) {
+			this.name = name;
 			this.graph = graph;
 			this.v1 = v1;
 			this.v2 = v2;
 			this.latch = latch;
+		}
+
+		public String getName() {
+			return name;
 		}
 
 		public boolean isSuccess() {
@@ -76,19 +99,21 @@ public class GraphTest {
 
 	private static class SearchGraphThread extends GraphThread {
 
-		public SearchGraphThread(Graph<Integer> graph, Integer v1, Integer v2, CountDownLatch latch) {
-			super(graph, v1, v2, latch);
+		public SearchGraphThread(String name, Graph<Integer> graph, Integer v1, Integer v2, CountDownLatch latch) {
+			super(name, graph, v1, v2, latch);
 		}
 
 		@Override
 		public void run() {
 			try {
+
 				List<Integer> path = null;
 				while (path == null || path.isEmpty()) {
 					path = graph.search(v1, v2);
 				}
 				List<Integer> expectedPath = IntStream.rangeClosed(v1, v2).boxed().collect(Collectors.toList());
 				Assert.assertArrayEquals("Search result check", expectedPath.toArray(), path.toArray());
+
 				setSuccess(true);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -97,5 +122,36 @@ public class GraphTest {
 			}
 		}
 
+	}
+
+	private static class WriteGraphThread extends GraphThread {
+
+		public WriteGraphThread(String name, Graph<Integer> graph, Integer v1, Integer v2, CountDownLatch latch) {
+			super(name, graph, v1, v2, latch);
+		}
+
+		@Override
+		public void run() {
+			try {
+				for (int i = v1; i <= v2; i++) {
+					graph.addVertex(i);
+					Thread.sleep(10);
+				}
+				for (int i = v1; i < v2; i++) {
+					graph.addEdge(i, i + 1);
+					Thread.sleep(10);
+				}
+
+				List<Integer> path = graph.search(v1, v2);
+				List<Integer> expectedPath = IntStream.rangeClosed(v1, v2).boxed().collect(Collectors.toList());
+				Assert.assertArrayEquals("Search result check", expectedPath.toArray(), path.toArray());
+
+				setSuccess(true);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} finally {
+				latch.countDown();
+			}
+		}
 	}
 }
