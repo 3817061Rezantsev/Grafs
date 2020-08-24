@@ -1,14 +1,15 @@
 package graphs;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Graph<T> {
 	protected HashSet<T> vertexes;
-	protected HashSet<Edge<T>> edges;
+	protected Set<Edge<T>> edges;
 
 	public Graph() {
 		vertexes = new HashSet<T>();
-		edges = new HashSet<Edge<T>>();
+		edges = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
 
 	public void show() {
@@ -111,7 +112,12 @@ public class Graph<T> {
 		while (!queue.isEmpty()) {
 			queue.poll();
 		}
-		daWay(start, finish, queue, tree);
+		synchronized (edges) {
+			synchronized (vertexes) {
+				daWay(start, finish, queue, tree);
+			}
+		}
+		
 		while (!queue.isEmpty() && (queue.getLast() != finish)) {
 			queue.pollLast();
 		}

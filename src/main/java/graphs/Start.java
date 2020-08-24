@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Start {
 	public static void main(String args[]) {
-		/*Graph<Integer> gr = new Graph<Integer>();
+		Graph<Integer> gr = new Graph<Integer>();
 		for(int i = 0; i < 12; i++)
 			gr.addVertex(i + 1);
 		gr.addEdge(1, 2);
@@ -29,7 +29,7 @@ public class Start {
 		for (Integer element : q)
 			System.out.print(element.toString() + ", ");
 		System.out.println();
-		gr.search(13, 14);*/
+		gr.search(13, 14);
 		Graph<Integer> graph = new Graph<Integer>();
 		graph.addVertex(1);
 		graph.addVertex(2);
