@@ -102,21 +102,18 @@ public class Graph<T> {
 
 	}
 
-	public ArrayList<T> search(T start, T finish) {
+	@SuppressWarnings("unchecked")
+	public List<T> search(T start, T finish) {
 		HashSet<T> tree = new HashSet<T>();
-		ArrayList<T> list = new ArrayList<T>();
 		Deque<T> queue = new LinkedList<T>();
 		if (edges.isEmpty()) {
-			return list;
+			return (List<T>) queue;
 		}
 		daWay(start, finish, queue, tree);
 		while (!queue.isEmpty() && (queue.getLast() != finish)) {
 			queue.pollLast();
 		}
-		while (!queue.isEmpty()) {
-			list.add(queue.poll());
-		}
-		return list;
+		return (List<T>) queue;
 	}
 	private boolean colored(T ver, HashSet<T> tree) {
 		boolean f = true;

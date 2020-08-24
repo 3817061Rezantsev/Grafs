@@ -19,13 +19,13 @@ public class Start {
 		gr.addEdge(9, 11);
 		gr.addEdge(10, 9);
 		gr.addEdge(1, 9);
-		ArrayList<Integer> h = gr.search(12, 1);
+		List<Integer> h = gr.search(12, 1);
 		for (Integer element : h)
 			System.out.print(element.toString() + ", ");
 		System.out.println();
 		gr.addVertex(13);
 		gr.addDirectedEdge(12, 13);
-		ArrayList<Integer> q = gr.search(1, 13);
+		List<Integer> q = gr.search(1, 13);
 		for (Integer element : q)
 			System.out.print(element.toString() + ", ");
 		System.out.println();
