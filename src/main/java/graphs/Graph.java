@@ -30,9 +30,9 @@ public class Graph<T> {
 	public void addEdge(Edge<T> e) {
 		boolean f = false, l = false;
 		for (T element : vertexes) {
-			if (element == e.first)
+			if (element.equals(e.GetFirst()))
 				f = true;
-			if (element == e.last)
+			if (element.equals(e.GetLast()))
 				l = true;
 		}
 		if (f && l)
@@ -85,13 +85,13 @@ public class Graph<T> {
 				queue.pollLast();
 			boolean f = false;
 			for (Edge<T> element : edges) {
-				if ((element.first == start)) {
+				if (element.first.equals(start)) {
 					f = tree.add(element.last);
 					if (f) {
 						daWay(element.last, finish, queue, tree);
 					}
 				}
-				if ((element.last == start) && element.flag) {
+				if (element.last.equals(start) && element.flag) {
 					f = tree.add(element.first);
 					if (f) {
 						daWay(element.first, finish, queue, tree);
@@ -110,7 +110,7 @@ public class Graph<T> {
 			return (List<T>) queue;
 		}
 		daWay(start, finish, queue, tree);
-		while (!queue.isEmpty() && (queue.getLast() != finish)) {
+		while (!queue.isEmpty() && (!queue.getLast().equals(finish))) {
 			queue.pollLast();
 		}
 		return (List<T>) queue;
@@ -118,13 +118,13 @@ public class Graph<T> {
 	private boolean colored(T ver, HashSet<T> tree) {
 		boolean f = true;
 		for (Edge<T> element : edges) {
-			if (element.first == ver) {
+			if (element.first.equals(ver)) {
 				f = tree.contains(element.last);
 				if (!f) {
 					break;
 				}
 			}
-			if (element.last == ver) {
+			if (element.last.equals(ver)) {
 				f = tree.contains(element.first);
 				if (!f) {
 					break;

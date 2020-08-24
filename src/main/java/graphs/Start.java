@@ -30,13 +30,19 @@ public class Start {
 			System.out.print(element.toString() + ", ");
 		System.out.println();
 		gr.search(13, 14);
+		Integer v1 = 1;
+		Integer v2 = 200;
+
 		Graph<Integer> graph = new Graph<Integer>();
-		graph.addVertex(1);
-		graph.addVertex(2);
-		graph.addVertex(3);
-		graph.addVertex(4);
-		graph.addEdge(1, 2);
-		graph.addEdge(3, 2);
-		graph.search(1, 4);
+		for (int i = v1; i <= v2; i++) {
+			graph.addVertex(i);
+		}
+		for (int i = v1; i < v2; i++) {
+			graph.addEdge(i, i + 1);
+		}
+		List<Integer> path = graph.search(v1, 128);
+			for (Integer element : path)
+				System.out.print(element.toString() + ", ");
+			System.out.println();
 	}
 }

@@ -10,6 +10,14 @@ public class Edge<T> {
 		this.last = last;
 		this.flag = true;
 	}
+	
+	public T GetFirst() {
+		return first;
+	}
+	
+	public T GetLast() {
+		return last;
+	}
 
 	@Override
 	public int hashCode() {
