@@ -52,8 +52,8 @@ public class GraphTest {
 	public void concurrencyTest() throws InterruptedException {
 		Graph<Integer> graph = new Graph<Integer>();
 		Integer v1 = 1;
-		Integer v2 = 500;
-		final int numOfReadThreads = 10;
+		Integer v2 = 1000;
+		final int numOfReadThreads = 25;
 
 		CountDownLatch latch = new CountDownLatch(numOfReadThreads + 1);
 		List<GraphThread> threads = new ArrayList<>();
@@ -67,7 +67,7 @@ public class GraphTest {
 			executor.execute(runnable);
 		}
 
-		latch.await(60, TimeUnit.SECONDS);
+		latch.await(600, TimeUnit.SECONDS);
 		// latch.await();
 
 		for (GraphThread graphThread : threads) {

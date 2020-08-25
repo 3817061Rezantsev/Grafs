@@ -27,7 +27,7 @@ public class Graph<T> {
 		vertexes.add(ver);
 	}
 
-	public void addEdge(Edge<T> e) {
+	public synchronized void addEdge(Edge<T> e) {
 		boolean f = false, l = false;
 		for (T element : vertexes) {
 			if (element.equals(e.GetFirst()))
