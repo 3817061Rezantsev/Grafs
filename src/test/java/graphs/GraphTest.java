@@ -1,5 +1,6 @@
 package graphs;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -46,6 +47,52 @@ public class GraphTest {
 			List<Integer> expectedPath = IntStream.rangeClosed(v1, i + 1).boxed().collect(Collectors.toList());
 			Assert.assertArrayEquals("Search result check", expectedPath.toArray(), path.toArray());
 		}
+	}
+
+	private Graph<Integer> createGraph(Integer v1, Integer v2) {
+		Graph<Integer> graph = new Graph<Integer>();
+		for (int i = v1; i <= v2; i++) {
+			graph.addVertex(i);
+		}
+		for (int i = v1; i < v2; i++) {
+			graph.addEdge(i, i + 1);
+		}
+		return graph;
+	}
+
+	@Test
+	public void capacityTest() {
+		final int size = 10000;
+		Graph<Integer> graph = createGraph(1, size);
+		List<Integer> path = graph.search(1, size);
+		Assert.assertEquals("Search result check", size, path.size());
+	}
+
+	//@Test
+	public void performanceTest() {
+		long start_time, create_time, search_time;
+		final int size_1 = 5000;
+		final int size_2 = 20000;
+
+		start_time = System.currentTimeMillis();
+		Graph<Integer> graph_1 = createGraph(1, size_1);
+		create_time = System.currentTimeMillis() - start_time;
+		System.out.println("create_time (" + size_1 + "): " + create_time + " ms");
+
+		start_time = System.currentTimeMillis();
+		Graph<Integer> graph_2 = createGraph(1, size_2);
+		create_time = System.currentTimeMillis() - start_time;
+		System.out.println("create_time (" + size_2 + "): " + create_time + " ms");
+
+		start_time = System.currentTimeMillis();
+		graph_1.search(1, size_1);
+		search_time = System.currentTimeMillis() - start_time;
+		System.out.println("search_time (" + size_1 + "): " + search_time + " ms");
+
+		start_time = System.currentTimeMillis();
+		graph_2.search(1, size_2);
+		search_time = System.currentTimeMillis() - start_time;
+		System.out.println("search_time (" + size_2 + "): " + search_time + " ms");
 	}
 
 	@Test
