@@ -48,19 +48,19 @@ public class GraphTest {
 		}
 	}
 
-	//@Test
+	@Test
 	public void concurrencyTest() throws InterruptedException {
 		Graph<Integer> graph = new Graph<Integer>();
 		Integer v1 = 1;
-		Integer v2 = 1000;
-		final int numOfReadThreads = 25;
+		Integer v2 = 500;
+		final int numOfReadThreads = 10;
 
 		CountDownLatch latch = new CountDownLatch(numOfReadThreads + 1);
 		List<GraphThread> threads = new ArrayList<>();
+		threads.add(new WriteGraphThread("write-thread", graph, v1, v2, latch));
 		for (int i = 0; i < numOfReadThreads; i++) {
 			threads.add(new SearchGraphThread("search-thread-" + i, graph, v1, v2, latch));
 		}
-		threads.add(new WriteGraphThread("write-thread", graph, v1, v2, latch));
 
 		Executor executor = Executors.newFixedThreadPool(threads.size());
 		for (Runnable runnable : threads) {
@@ -113,6 +113,7 @@ public class GraphTest {
 		@Override
 		public void run() {
 			try {
+				System.out.println("SearchGraphThread[" + name + "]: start");
 				List<Integer> path = null;
 				while (path == null || path.isEmpty()) {
 					path = graph.search(v1, v2);
@@ -122,6 +123,7 @@ public class GraphTest {
 				Assert.assertArrayEquals("Search result check", expectedPath.toArray(), path.toArray());
 
 				setSuccess(true);
+				System.out.println("SearchGraphThread[" + name + "]: end");
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -140,9 +142,9 @@ public class GraphTest {
 		@Override
 		public void run() {
 			try {
+				System.out.println("WriteGraphThread: start");
 				for (int i = v1; i <= v2; i++) {
 					graph.addVertex(i);
-					Thread.sleep(10);
 				}
 				for (int i = v1; i < v2; i++) {
 					graph.addEdge(i, i + 1);
@@ -154,6 +156,7 @@ public class GraphTest {
 				Assert.assertArrayEquals("Search result check", expectedPath.toArray(), path.toArray());
 
 				setSuccess(true);
+				System.out.println("WriteGraphThread: end");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} finally {
