@@ -103,7 +103,7 @@ public class Graph<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<T> search(T start, T finish) {
+	public synchronized List<T> search(T start, T finish) {
 		HashSet<T> tree = new HashSet<T>();
 		Deque<T> queue = new LinkedList<T>();
 		if (edges.isEmpty()) {
