@@ -50,71 +50,76 @@ public class Graph<T> {
 		DirectedEdge<T> e = new DirectedEdge<T>(first, last);
 		this.addEdge(e);
 	}
-/*
-	private void dfs(T start, ArrayList<T> list) {
-		tree.add(start);
-		list.add(start);
-		for (Edge<T> element : edges) {
-			if (element.first == start) {
-				boolean f = tree.add(element.last);
-				if (f) {
-					dfs(element.last, list);
-				}
-			}
-			if (element.last == start) {
-				boolean f = tree.add(element.first);
-				if (f) {
-					dfs(element.first, list);
-				}
-			}
-		}
-	}
 
-	public ArrayList<T> startDFS(T start) {
-		tree.clear();
-		ArrayList<T> list = new ArrayList<T>();
-		dfs(start, list);
-		return list;
-	}
-*/
-	private void daWay(T start, T finish, Deque<T> queue, HashSet<T> tree) {
-		tree.add(start);
-		queue.add(start);
-		if ((start != finish) && (!tree.contains(finish))) {
-			while (!queue.isEmpty() && colored(queue.getLast(), tree))
-				queue.pollLast();
-			boolean f = false;
-			for (Edge<T> element : edges) {
-				if (element.first.equals(start)) {
-					f = tree.add(element.last);
-					if (f) {
-						daWay(element.last, finish, queue, tree);
-					}
-				}
-				if (element.last.equals(start) && element.flag) {
-					f = tree.add(element.first);
-					if (f) {
-						daWay(element.first, finish, queue, tree);
-					}
-				}
-			}
-		}
-
-	}
-
-	@SuppressWarnings("unchecked")
-	public synchronized List<T> search(T start, T finish) {
+	public List<T> startDFS(T start) {
+		Stack<T> stack = new Stack<T>();
 		HashSet<T> tree = new HashSet<T>();
-		Deque<T> queue = new LinkedList<T>();
-		if (edges.isEmpty()) {
-			return (List<T>) queue;
+		ArrayList<T> list = new ArrayList<T>();
+		tree.add(start);
+		stack.add(start);
+		while(!stack.isEmpty()) {
+			for (Edge<T> element : edges) {
+				if (element.first.equals(stack.peek())) {
+					boolean f = tree.add(element.last);
+					if (f) {
+						stack.add(element.last);
+					}
+				}
+				if (element.last.equals(stack.peek()) && element.flag) {
+					boolean f = tree.add(element.first);
+					if (f) {
+						stack.add(element.first);
+					}
+				}
+			}
+			if (!stack.isEmpty() && colored(stack.peek(), tree)) {
+				list.add(stack.pop());
+			}
 		}
-		daWay(start, finish, queue, tree);
-		while (!queue.isEmpty() && (!queue.getLast().equals(finish))) {
-			queue.pollLast();
-		}
-		return (List<T>) queue;
+		return (List<T>)list;
 	}
+
+	public synchronized List<T> search (T start, T finish) {
+		Stack<T> stack = new Stack<T>();
+		HashSet<T> tree = new HashSet<T>();
+		if (edges.isEmpty()) {
+			return (List<T>) stack;
+		}
+		tree.add(start);
+		stack.add(start);
+		
+		while(!stack.isEmpty()) {
+			for (Edge<T> element : edges) {
+				if (element.first.equals(stack.peek())) {
+					boolean f = tree.add(element.last);
+					if (f) {
+						stack.add(element.last);
+					}
+					if (element.last.equals(finish)) {
+						break;
+					}
+				}
+				if (element.last.equals(stack.peek()) && element.flag) {
+					boolean f = tree.add(element.first);
+					if (f) {
+						stack.add(element.first);
+					}
+					if (element.first.equals(finish)) {
+						break;
+					}
+				}
+				
+			}
+			if (!stack.isEmpty() && colored(stack.peek(), tree) && !stack.peek().equals(finish)) {
+				stack.pop();
+			}
+			if (!stack.isEmpty() && stack.peek().equals(finish)) {
+				break;
+			}
+		}
+		return (List<T>)stack;
+	}
+	
 	private boolean colored(T ver, HashSet<T> tree) {
 		boolean f = true;
 		for (Edge<T> element : edges) {
