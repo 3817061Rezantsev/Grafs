@@ -4,7 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -68,11 +73,37 @@ public class GraphTest {
 		Assert.assertEquals("Search result check", size, path.size());
 	}
 
-	//@Test
-	public void performanceTest() {
-		long start_time, create_time, search_time;
-		final int size_1 = 5000;
+	@Test
+	public void createGraphPerformanceTest() {
+		long start_time;
+		final int size_1 = 10000;
 		final int size_2 = 20000;
+
+		start_time = System.currentTimeMillis();
+		createGraph(1, size_1);
+		long create_time_1 = System.currentTimeMillis() - start_time;
+		System.out.println("create_time (" + size_1 + "): " + create_time_1 + " ms");
+
+		start_time = System.currentTimeMillis();
+		createGraph(1, size_2);
+		long create_time_2 = System.currentTimeMillis() - start_time;
+		System.out.println("create_time (" + size_2 + "): " + create_time_2 + " ms");
+
+		float size_factor = (float) size_2 / size_1;
+		float perf_factor = (float) create_time_2 / create_time_1;
+
+		System.out.println("Size increase: " + size_factor + ", Performance degradation: " + perf_factor);
+
+		Assert.assertTrue("Performance degradation should not be more than 20% of the size increase.",
+				size_factor * 1.2f > perf_factor);
+	}
+
+	// @Test
+	public void performanceTest() {
+		long start_time, create_time, search_time, iterate_time;
+		final int size_1 = 10000;
+		final int size_2 = 20000;
+		final int size_3 = 30000;
 
 		start_time = System.currentTimeMillis();
 		Graph<Integer> graph_1 = createGraph(1, size_1);
@@ -85,6 +116,11 @@ public class GraphTest {
 		System.out.println("create_time (" + size_2 + "): " + create_time + " ms");
 
 		start_time = System.currentTimeMillis();
+		Graph<Integer> graph_3 = createGraph(1, size_3);
+		create_time = System.currentTimeMillis() - start_time;
+		System.out.println("create_time (" + size_3 + "): " + create_time + " ms");
+
+		start_time = System.currentTimeMillis();
 		graph_1.search(1, size_1);
 		search_time = System.currentTimeMillis() - start_time;
 		System.out.println("search_time (" + size_1 + "): " + search_time + " ms");
@@ -93,13 +129,52 @@ public class GraphTest {
 		graph_2.search(1, size_2);
 		search_time = System.currentTimeMillis() - start_time;
 		System.out.println("search_time (" + size_2 + "): " + search_time + " ms");
+
+		Iterator<Integer> it_1 = graph_1.iterator();
+		start_time = System.currentTimeMillis();
+		while (it_1.hasNext()) {
+		}
+		iterate_time = System.currentTimeMillis() - start_time;
+		System.out.println("iterate_time (" + size_1 + "): " + iterate_time + " ms");
+
+		Iterator<Integer> it_2 = graph_2.iterator();
+		start_time = System.currentTimeMillis();
+		while (it_2.hasNext()) {
+		}
+		iterate_time = System.currentTimeMillis() - start_time;
+		System.out.println("iterate_time (" + size_2 + "): " + iterate_time + " ms");
+	}
+
+	@Test
+	public void iteratorTest() {
+		Graph<Integer> graph = new Graph<Integer>();
+		for (int i = 1; i < 10; i++) {
+			graph.addVertex(i);
+		}
+		graph.addEdge(1, 2);
+		graph.addEdge(1, 3);
+		graph.addEdge(2, 4);
+		graph.addEdge(2, 5);
+		graph.addEdge(2, 6);
+		graph.addEdge(3, 7);
+		graph.addEdge(3, 8);
+		graph.addEdge(3, 9);
+
+		Set<Integer> visited = new HashSet<>();
+		Iterator<Integer> it = graph.iterator();
+		while (it.hasNext()) {
+			Integer i = it.next();
+			Assert.assertFalse(visited.contains(i));
+			visited.add(i);
+		}
+		Assert.assertEquals("Visited vertexes count", 9, visited.size());
 	}
 
 	@Test
 	public void concurrencyTest() throws InterruptedException {
 		Graph<Integer> graph = new Graph<Integer>();
 		Integer v1 = 1;
-		Integer v2 = 1000;
+		Integer v2 = 100;
 		final int numOfReadThreads = 25;
 
 		CountDownLatch latch = new CountDownLatch(numOfReadThreads + 1);
