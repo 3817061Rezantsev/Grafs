@@ -20,8 +20,8 @@ public class Start {
 		gr.addEdge(9, 11);
 		gr.addEdge(10, 9);
 		
-		//List<Integer> q = gr.DFS(1);
-		List<Integer> q = gr.search(12, 1);
+		List<Integer> q = gr.DFS(1);
+		//List<Integer> q = gr.search(12, 1);
 		for (Integer element : q)
 			System.out.print(element.toString() + ", ");
 		System.out.println();
@@ -30,9 +30,9 @@ public class Start {
 			System.out.println(iter.next());
 		}
 		final int size = 10000;
-		//Graph<Integer> graph = createGraph(1, size);
-		//List<Integer> path = graph.search(1, size);
-		//System.out.println("AAA");
+		Graph<Integer> graph = createGraph(1, size);
+		List<Integer> path = graph.DFS(1);
+		System.out.println("AAA");
 	}
 
 	private static Graph<Integer> createGraph(Integer v1, Integer v2) {

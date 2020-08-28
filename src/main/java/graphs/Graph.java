@@ -55,30 +55,31 @@ public class Graph<T> {
 		this.addEdge(e);
 	}
 
-	public List<T> startDFS(T start) {
+	public List<T> DFS(T start) {
 		Stack<T> stack = new Stack<T>();
 		HashSet<T> tree = new HashSet<T>();
 		ArrayList<T> list = new ArrayList<T>();
 		tree.add(start);
 		stack.add(start);
 		while(!stack.isEmpty()) {
+			if (!stack.isEmpty() && colored(stack.peek(), tree)) {
+				list.add(stack.pop());
+			}
 			for (Edge<T> element : edges) {
-				if (element.first.equals(stack.peek())) {
+				if (!stack.isEmpty() && element.first.equals(stack.peek())) {
 					boolean f = tree.add(element.last);
 					if (f) {
 						stack.add(element.last);
 					}
 				}
-				if (element.last.equals(stack.peek()) && element.flag) {
+				if (!stack.isEmpty() && element.last.equals(stack.peek()) && element.flag) {
 					boolean f = tree.add(element.first);
 					if (f) {
 						stack.add(element.first);
 					}
 				}
 			}
-			if (!stack.isEmpty() && colored(stack.peek(), tree)) {
-				list.add(stack.pop());
-			}
+			
 		}
 		return (List<T>)list;
 	}

@@ -19,27 +19,46 @@ public class GraphIterator<T> implements Iterator<T> {
 
 	@Override
 	public boolean hasNext() {
-		while (!stack.isEmpty()) {
-			for (Edge<T> element : graph.GetEdges()) {
-				if (element.first.equals(stack.peek())) {
-					boolean f = tree.add(element.last);
-					if (f) {
-						stack.add(element.last);
-					}
-				}
-				if (element.last.equals(stack.peek()) && element.flag) {
-					boolean f = tree.add(element.first);
-					if (f) {
-						stack.add(element.first);
-					}
-				}
-			}
+		if (!stack.isEmpty() && graph.colored(stack.peek(), tree)) {
+			currentNode = stack.pop();
+			return true;
+		}
+		if (!stack.isEmpty()) {
+			DeepDive();
+			currentNode = stack.pop();
+			return true;
+		} else return false;
+		/*while (!stack.isEmpty()) {
 			if (!stack.isEmpty() && graph.colored(stack.peek(), tree)) {
 				currentNode = stack.pop();
 				return true;
 			}
+			for (Edge<T> element : graph.GetEdges()) {
+				if (element.first.equals(stack.peek()) && tree.add(element.last)) {
+					stack.add(element.last);
+				}
+				if (element.last.equals(stack.peek()) && element.flag && tree.add(element.first)) {
+					stack.add(element.first);
+				}
+			}
+
+		}*/
+		
+	}
+
+	private void DeepDive() {
+		for (Edge<T> element : graph.GetEdges()) {
+			if (element.first.equals(stack.peek()) && tree.add(element.last)) {
+				stack.add(element.last);
+			}
+			if (element.last.equals(stack.peek()) && element.flag && tree.add(element.first)) {
+				stack.add(element.first);
+			}
 		}
-		return false;
+		if (!stack.isEmpty() && !graph.colored(stack.peek(), tree)) {
+			DeepDive();
+		}
+
 	}
 
 	@Override
