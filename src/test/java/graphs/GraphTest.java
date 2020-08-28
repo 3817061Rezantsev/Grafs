@@ -98,6 +98,23 @@ public class GraphTest {
 				size_factor * 1.2f > perf_factor);
 	}
 
+	@Test
+	public void iteratorPerformanceTest() {
+		final int size = 10000;
+		Graph<Integer> graph_1 = createGraph(1, size);
+
+		Iterator<Integer> it_1 = graph_1.iterator();
+		long start_time = System.currentTimeMillis();
+		while (it_1.hasNext()) {
+		}
+		long iterate_time = System.currentTimeMillis() - start_time;
+		System.out.println("iterate_time (" + size + "): " + iterate_time + " ms");
+
+		final int max_time = 100;
+		Assert.assertTrue("iterate_time (" + iterate_time + " ms) should not be more than " + max_time + " ms",
+				iterate_time < max_time);
+	}
+
 	// @Test
 	public void performanceTest() {
 		long start_time, create_time, search_time, iterate_time;
