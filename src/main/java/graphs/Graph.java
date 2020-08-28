@@ -11,6 +11,10 @@ public class Graph<T> {
 		vertexes = new HashSet<T>();
 		edges = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
+	
+	public Set<Edge<T>> GetEdges() {
+		return edges;
+	}
 
 	public void show() {
 		for (T element : vertexes) {
@@ -120,7 +124,7 @@ public class Graph<T> {
 		return (List<T>)stack;
 	}
 	
-	private boolean colored(T ver, HashSet<T> tree) {
+	public boolean colored(T ver, HashSet<T> tree) {
 		boolean f = true;
 		for (Edge<T> element : edges) {
 			if (element.first.equals(ver)) {

@@ -25,19 +25,14 @@ public class Start {
 		for (Integer element : q)
 			System.out.print(element.toString() + ", ");
 		System.out.println();
-		gr.addEdge(1, 9);
-		List<Integer> h = gr.search(12, 1);
-		for (Integer element : h)
-			System.out.print(element.toString() + ", ");
-		System.out.println();
-		gr.addVertex(13);
-		gr.addDirectedEdge(12, 13);
-		
-		
+		GraphIterator<Integer> iter = new GraphIterator<Integer>(gr, 1);
+		while(iter.hasNext()) {
+			System.out.println(iter.next());
+		}
 		final int size = 10000;
 		//Graph<Integer> graph = createGraph(1, size);
 		//List<Integer> path = graph.search(1, size);
-		System.out.println("AAA");
+		//System.out.println("AAA");
 	}
 
 	private static Graph<Integer> createGraph(Integer v1, Integer v2) {
