@@ -37,12 +37,8 @@ public class Graph<T> {
 
 	public synchronized void addEdge(Edge<T> e) {
 		boolean f = false, l = false;
-		for (T element : vertexes) {
-			if (element.equals(e.GetFirst()))
-				f = true;
-			if (element.equals(e.GetLast()))
-				l = true;
-		}
+		f = vertexes.contains(e.first);
+		l = vertexes.contains(e.last);
 		if (f && l)
 			edges.add(e);
 		else
