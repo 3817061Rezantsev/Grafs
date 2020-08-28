@@ -2,11 +2,12 @@ package graphs;
 
 import java.util.*;
 
-public class GraphIterator<T> implements Iterator {
+public class GraphIterator<T> implements Iterator<T> {
 	protected T currentNode;
 	protected Graph<T> graph;
 	protected Stack<T> stack;
 	protected HashSet<T> tree;
+
 	public GraphIterator(Graph<T> graph, T currentNode) {
 		this.graph = graph;
 		this.currentNode = currentNode;
@@ -15,10 +16,10 @@ public class GraphIterator<T> implements Iterator {
 		tree.add(currentNode);
 		stack.add(currentNode);
 	}
+
 	@Override
 	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		while(!stack.isEmpty()) {
+		while (!stack.isEmpty()) {
 			for (Edge<T> element : graph.GetEdges()) {
 				if (element.first.equals(stack.peek())) {
 					boolean f = tree.add(element.last);
@@ -42,8 +43,7 @@ public class GraphIterator<T> implements Iterator {
 	}
 
 	@Override
-	public Object next() {
-		// TODO Auto-generated method stub
+	public T next() {
 		return currentNode;
 	}
 

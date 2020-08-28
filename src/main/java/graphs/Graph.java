@@ -16,6 +16,10 @@ public class Graph<T> {
 		return edges;
 	}
 
+	public Iterator<T> iterator() {
+		return new GraphIterator<T>(this, vertexes.iterator().next());
+	}
+	
 	public void show() {
 		for (T element : vertexes) {
 			System.out.print(element.toString() + ", ");

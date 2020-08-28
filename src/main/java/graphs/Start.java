@@ -25,7 +25,7 @@ public class Start {
 		for (Integer element : q)
 			System.out.print(element.toString() + ", ");
 		System.out.println();
-		GraphIterator<Integer> iter = new GraphIterator<Integer>(gr, 1);
+		Iterator<Integer> iter = gr.iterator();
 		while(iter.hasNext()) {
 			System.out.println(iter.next());
 		}
