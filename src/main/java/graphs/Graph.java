@@ -4,11 +4,14 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Graph<T> {
-	protected HashSet<T> vertexes;
+	protected Set<T> vertex;
+	protected Map<T, Set<Edge<T>>> vertexes;
 	protected Set<Edge<T>> edges;
+	protected Edge<T> ZeroEdge = null;
+	protected T FirstKey;
 
 	public Graph() {
-		vertexes = new HashSet<T>();
+		vertexes = new HashMap<T, Set<Edge<T>>>();
 		edges = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
 	
@@ -17,11 +20,12 @@ public class Graph<T> {
 	}
 
 	public Iterator<T> iterator() {
-		return new GraphIterator<T>(this, vertexes.iterator().next());
+		return new GraphIterator<T>(this, FirstKey);
 	}
 	
 	public void show() {
-		for (T element : vertexes) {
+		Collection<Set<Edge<T>>> col = vertexes.values();
+		for (Object element : col) {
 			System.out.print(element.toString() + ", ");
 		}
 		System.out.println();
@@ -32,15 +36,24 @@ public class Graph<T> {
 	}
 
 	public void addVertex(T ver) {
-		vertexes.add(ver);
+		boolean f = vertexes.containsKey(ver);
+		if(!f) {
+			//vertex.add(ver);
+			Set<Edge<T>> ed  = Collections.newSetFromMap(new ConcurrentHashMap<>());
+			vertexes.put(ver, ed);
+			FirstKey = ver;
+		}
 	}
 
 	public synchronized void addEdge(Edge<T> e) {
 		boolean f = false, l = false;
-		f = vertexes.contains(e.first);
-		l = vertexes.contains(e.last);
-		if (f && l)
+		f = vertexes.containsKey(e.first);
+		l = vertexes.containsKey(e.last);
+		if (f && l) {
 			edges.add(e);
+			vertexes.get(e.first).add(e);
+			vertexes.get(e.last).add(e);
+		}
 		else
 			System.out.println("Vertex not found: " + e.first + " - " + e.last);
 	}
@@ -127,7 +140,8 @@ public class Graph<T> {
 	
 	public boolean colored(T ver, HashSet<T> tree) {
 		boolean f = true;
-		for (Edge<T> element : edges) {
+		Set<Edge<T>> set = vertexes.get(ver);
+		for (Edge<T> element : set) {
 			if (element.first.equals(ver)) {
 				f = tree.contains(element.last);
 				if (!f) {

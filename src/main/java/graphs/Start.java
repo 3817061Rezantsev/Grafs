@@ -19,7 +19,7 @@ public class Start {
 		gr.addEdge(12, 8);
 		gr.addEdge(9, 11);
 		gr.addEdge(10, 9);
-		
+		// gr.show();
 		List<Integer> q = gr.DFS(1);
 		//List<Integer> q = gr.search(12, 1);
 		for (Integer element : q)
@@ -29,9 +29,10 @@ public class Start {
 		while(iter.hasNext()) {
 			System.out.println(iter.next());
 		}
+		// gr.show();
 		final int size = 10000;
-		Graph<Integer> graph = createGraph(1, size);
-		List<Integer> path = graph.DFS(1);
+		//Graph<Integer> graph = createGraph(1, size);
+		//List<Integer> path = graph.DFS(1);
 		System.out.println("AAA");
 	}
 

@@ -4,7 +4,7 @@ public class Edge<T> {
 	protected T first;
 	protected T last;
 	protected boolean flag;
-
+	
 	Edge(T first, T last) {
 		this.first = first;
 		this.last = last;
